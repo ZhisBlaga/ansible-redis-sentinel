@@ -1,0 +1,42 @@
+- hosts: all
+  become: true
+  vars:
+    REDIS_PASSWORD: "123456"
+  tasks:
+    - name: Install redis-server
+      ansible.builtin.apt:
+        name: redis-server
+        update_cache: true
+    - name: Install redis-sentinel
+      ansible.builtin.apt:
+        name: redis-sentinel
+    - name: Enable service redis-server and ensure it is not masked
+      ansible.builtin.systemd:
+        name: redis-server
+        enabled: yes
+        masked: no
+    - name: Enable service redis-sentinel and ensure it is not masked
+      ansible.builtin.systemd:
+        name: redis-sentinel
+        enabled: yes
+        masked: no
+    - name: Copy redis config
+      ansible.builtin.template:
+        src: redis.conf.j2
+        dest: /etc/redis/redis.conf
+    - name: Copy sentinel config  
+      ansible.builtin.template:
+        src: sentinel.conf.j2
+        dest: /etc/redis/sentinel.conf
+
+    - name: restart redis
+      # when: redis_conf_file is changed
+      service:
+        name: redis-server
+        state: restarted
+
+    - name: restart redis-sentinel
+      # when: redis_conf_file is changed
+      service:
+        name: redis-sentinel
+        state: restarted
