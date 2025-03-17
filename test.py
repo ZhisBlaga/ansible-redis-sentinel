@@ -1,6 +1,7 @@
 import time
 from redis import RedisError, sentinel
 import sys
+import ssl
 
 ERROR_KEY_NOT_FOUND = "Key not found in redis"
 
@@ -12,6 +13,13 @@ class RedisDriver:
 
     def __connect(self, redis_config):
         try:
+            tls_params = {
+                'ssl': True,  # Включаем TLS
+                'ssl_cert_reqs': ssl.CERT_NONE,  # Требуем сертификат
+                'ssl_ca_certs': '/data/git/zhis/infra/redis/ansible/files/ca.pem',  # Путь к CA-сертификату
+                'ssl_version': ssl.PROTOCOL_TLSv1_1,
+            }       
+
             self.connection = sentinel.Sentinel([(redis_config["master_host"],
                                                   redis_config["master_port"]),
                                                  (redis_config["slave_1_host"],
@@ -21,9 +29,9 @@ class RedisDriver:
                                                  (redis_config["slave_3_host"],
                                                   redis_config["slave_3_port"])],
                                                 password=redis_config["password"],
-                                                min_other_sentinels=2,
+                                                # min_other_sentinels=2,
                                                 encoding="utf-8",
-                                                decode_responses=True)
+                                                decode_responses=True, **tls_params)
 
         except RedisError as err:
             error_str = "Error while connecting to redis : " + str(err)

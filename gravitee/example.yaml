@@ -1,0 +1,51 @@
+ratelimit:
+  type: redis               # repository type
+  redis:                    # redis repository
+    #host:                   # redis host (default localhost)
+    #port:                   # redis port (default 6379)
+    #password:               # redis password (default null)
+    #timeout:                # redis timeout (default -1)
+
+    # Following properties are REQUIRED ONLY when running Redis in sentinel mode
+    sentinel:
+      master: 'mymaster'              # redis sentinel master host
+      password: '123456'            # redis sentinel master password
+      nodes: [              # redis sentinel node(s) list
+        {
+          host : redis01.zhis.su, # redis sentinel node host
+          port : 26379      # redis sentinel node port
+        },
+        {
+          host : redis02.zhis.su,
+          port : 26379
+        },
+        {
+          host : redis03.zhis.su,
+          port : 26379
+        }
+      ]
+
+    # Following SSL settings are REQUIRED ONLY for Redis client SSL
+    ssl: true                # redis ssl mode (default false)
+    trustAll: false 
+    tlsProtocols:  TLSv1.3
+    tlsCiphers: TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384, TLS_CHACHA20_POLY1305_SHA256
+    alpn: false
+    openssl: false
+    # Keystore for redis mTLS (client certificate)
+    keystore:
+      type: jks
+      path: /opt/graviteeio-gateway/keystore.jks
+      password: '123456'
+    #keyPassword:
+    #alias:
+    #certificates: # Certificates are required if keystore's type is pem
+    #  - cert: ${gravitee.home}/security/redis-mycompany.org.pem
+    #    key: ${gravitee.home}/security/redis-mycompany.org.key
+    #      - cert: ${gravitee.home}/security/redis-myothercompany.com.pem
+    #        key: ${gravitee.home}/security/redis-myothercompany.com.key
+    #truststore:
+    #  type: pem
+    #  path: ${gravitee.home}/security/redis-truststore.jks
+    #  password: secret
+    #  alias:

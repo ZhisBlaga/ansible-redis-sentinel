@@ -20,6 +20,16 @@
         name: redis-sentinel
         enabled: yes
         masked: no
+    - name: Copy certificates
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /etc/redis/{{ item }}
+        mode: 0644
+      loop:
+        - fullchain1.pem
+        - privkey1.pem
+        - ca.pem
+
     - name: Copy redis config
       ansible.builtin.template:
         src: redis.conf.j2

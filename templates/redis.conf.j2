@@ -1,5 +1,16 @@
 bind 0.0.0.0
-port 6379
+port 0
+tls-port 6379
+tls-cert-file /etc/redis/fullchain1.pem
+tls-key-file /etc/redis/privkey1.pem
+tls-ca-cert-file /etc/redis/ca.pem
+tls-replication yes
+tls-auth-clients yes
+# modern configuration
+tls-protocols "TLSv1.3"
+tls-prefer-server-ciphers no
+tls-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+
 requirepass {{ REDIS_PASSWORD}}
 masterauth {{ REDIS_PASSWORD}}
 {% if "master" not in group_names %}

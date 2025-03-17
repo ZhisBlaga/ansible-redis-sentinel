@@ -6,3 +6,16 @@ sentinel down-after-milliseconds mymaster 3000
 sentinel failover-timeout mymaster 6000
 sentinel resolve-hostnames yes
 sentinel announce-hostnames yes
+
+
+port 0
+tls-port 26379
+tls-cert-file /etc/redis/fullchain1.pem
+tls-key-file /etc/redis/privkey1.pem
+tls-ca-cert-file /etc/redis/ca.pem
+tls-replication yes
+tls-auth-clients yes
+# modern configuration
+tls-protocols "TLSv1.3"
+tls-prefer-server-ciphers no
+tls-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
